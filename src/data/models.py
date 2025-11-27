@@ -1,174 +1,102 @@
-from pydantic import BaseModel
+"""Typed data models used by the hedge fund pipeline."""
+
+from __future__ import annotations
+
+from typing import List, Optional
+
+from pydantic import BaseModel, Field, ConfigDict
 
 
-class Price(BaseModel):
+class BaseAPIModel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+
+class Price(BaseAPIModel):
+    ticker: str
+    time: str
     open: float
     close: float
     high: float
     low: float
-    volume: int
-    time: str
+    volume: float
 
 
-class PriceResponse(BaseModel):
-    ticker: str
-    prices: list[Price]
+class PriceResponse(BaseAPIModel):
+    prices: List[Price] = Field(default_factory=list)
 
 
-class FinancialMetrics(BaseModel):
-    ticker: str
-    report_period: str
-    period: str
-    currency: str
-    market_cap: float | None
-    enterprise_value: float | None
-    price_to_earnings_ratio: float | None
-    price_to_book_ratio: float | None
-    price_to_sales_ratio: float | None
-    enterprise_value_to_ebitda_ratio: float | None
-    enterprise_value_to_revenue_ratio: float | None
-    free_cash_flow_yield: float | None
-    peg_ratio: float | None
-    gross_margin: float | None
-    operating_margin: float | None
-    net_margin: float | None
-    return_on_equity: float | None
-    return_on_assets: float | None
-    return_on_invested_capital: float | None
-    asset_turnover: float | None
-    inventory_turnover: float | None
-    receivables_turnover: float | None
-    days_sales_outstanding: float | None
-    operating_cycle: float | None
-    working_capital_turnover: float | None
-    current_ratio: float | None
-    quick_ratio: float | None
-    cash_ratio: float | None
-    operating_cash_flow_ratio: float | None
-    debt_to_equity: float | None
-    debt_to_assets: float | None
-    interest_coverage: float | None
-    revenue_growth: float | None
-    earnings_growth: float | None
-    book_value_growth: float | None
-    earnings_per_share_growth: float | None
-    free_cash_flow_growth: float | None
-    operating_income_growth: float | None
-    ebitda_growth: float | None
-    payout_ratio: float | None
-    earnings_per_share: float | None
-    book_value_per_share: float | None
-    free_cash_flow_per_share: float | None
+class FinancialMetrics(BaseAPIModel):
+    report_period: Optional[str] = None
+    market_cap: Optional[float] = None
+    revenue_growth: Optional[float] = None
+    free_cash_flow_growth: Optional[float] = None
+    earnings_growth: Optional[float] = None
+    return_on_equity: Optional[float] = None
+    return_on_invested_capital: Optional[float] = None
+    debt_to_equity: Optional[float] = None
+    operating_margin: Optional[float] = None
+    current_ratio: Optional[float] = None
+    enterprise_value: Optional[float] = None
+    enterprise_value_to_ebitda_ratio: Optional[float] = None
+    price_to_book_ratio: Optional[float] = None
+    book_value_growth: Optional[float] = None
+    interest_coverage: Optional[float] = None
 
 
-class FinancialMetricsResponse(BaseModel):
-    financial_metrics: list[FinancialMetrics]
+class FinancialMetricsResponse(BaseAPIModel):
+    financial_metrics: List[FinancialMetrics] = Field(default_factory=list)
 
 
-class LineItem(BaseModel):
-    ticker: str
-    report_period: str
-    period: str
-    currency: str
-
-    # Allow additional fields dynamically
-    model_config = {"extra": "allow"}
-
-
-class LineItemResponse(BaseModel):
-    search_results: list[LineItem]
-
-
-class InsiderTrade(BaseModel):
-    ticker: str
-    issuer: str | None
-    name: str | None
-    title: str | None
-    is_board_director: bool | None
-    transaction_date: str | None
-    transaction_shares: float | None
-    transaction_price_per_share: float | None
-    transaction_value: float | None
-    shares_owned_before_transaction: float | None
-    shares_owned_after_transaction: float | None
-    security_title: str | None
-    filing_date: str
+class LineItem(BaseAPIModel):
+    net_income: Optional[float] = None
+    depreciation_and_amortization: Optional[float] = None
+    capital_expenditure: Optional[float] = None
+    working_capital: Optional[float] = None
+    total_debt: Optional[float] = None
+    cash_and_equivalents: Optional[float] = None
+    interest_expense: Optional[float] = None
+    revenue: Optional[float] = None
+    operating_income: Optional[float] = None
+    ebit: Optional[float] = None
+    ebitda: Optional[float] = None
+    outstanding_shares: Optional[float] = None
+    total_assets: Optional[float] = None
+    total_liabilities: Optional[float] = None
+    shareholders_equity: Optional[float] = None
+    dividends_and_other_cash_distributions: Optional[float] = None
+    issuance_or_purchase_of_equity_shares: Optional[float] = None
+    gross_profit: Optional[float] = None
+    gross_margin: Optional[float] = None
+    free_cash_flow: Optional[float] = None
 
 
-class InsiderTradeResponse(BaseModel):
-    insider_trades: list[InsiderTrade]
+class LineItemResponse(BaseAPIModel):
+    search_results: List[LineItem] = Field(default_factory=list)
 
 
-class CompanyNews(BaseModel):
-    ticker: str
-    title: str
-    author: str
-    source: str
-    date: str
-    url: str
-    sentiment: str | None = None
+class InsiderTrade(BaseAPIModel):
+    filing_date: Optional[str] = None
+    transaction_shares: Optional[float] = None
+    transaction_type: Optional[str] = None
 
 
-class CompanyNewsResponse(BaseModel):
-    news: list[CompanyNews]
+class InsiderTradeResponse(BaseAPIModel):
+    insider_trades: List[InsiderTrade] = Field(default_factory=list)
 
 
-class CompanyFacts(BaseModel):
-    ticker: str
-    name: str
-    cik: str | None = None
-    industry: str | None = None
-    sector: str | None = None
-    category: str | None = None
-    exchange: str | None = None
-    is_active: bool | None = None
-    listing_date: str | None = None
-    location: str | None = None
-    market_cap: float | None = None
-    number_of_employees: int | None = None
-    sec_filings_url: str | None = None
-    sic_code: str | None = None
-    sic_industry: str | None = None
-    sic_sector: str | None = None
-    website_url: str | None = None
-    weighted_average_shares: int | None = None
+class CompanyNews(BaseAPIModel):
+    date: Optional[str] = None
+    title: Optional[str] = None
+    sentiment: Optional[str] = None
 
 
-class CompanyFactsResponse(BaseModel):
+class CompanyNewsResponse(BaseAPIModel):
+    news: List[CompanyNews] = Field(default_factory=list)
+
+
+class CompanyFacts(BaseAPIModel):
+    market_cap: Optional[float] = None
+
+
+class CompanyFactsResponse(BaseAPIModel):
     company_facts: CompanyFacts
-
-
-class Position(BaseModel):
-    cash: float = 0.0
-    shares: int = 0
-    ticker: str
-
-
-class Portfolio(BaseModel):
-    positions: dict[str, Position]  # ticker -> Position mapping
-    total_cash: float = 0.0
-
-
-class AnalystSignal(BaseModel):
-    signal: str | None = None
-    confidence: float | None = None
-    reasoning: dict | str | None = None
-    max_position_size: float | None = None  # For risk management signals
-
-
-class TickerAnalysis(BaseModel):
-    ticker: str
-    analyst_signals: dict[str, AnalystSignal]  # agent_name -> signal mapping
-
-
-class AgentStateData(BaseModel):
-    tickers: list[str]
-    portfolio: Portfolio
-    start_date: str
-    end_date: str
-    ticker_analyses: dict[str, TickerAnalysis]  # ticker -> analysis mapping
-
-
-class AgentStateMetadata(BaseModel):
-    show_reasoning: bool = False
-    model_config = {"extra": "allow"}

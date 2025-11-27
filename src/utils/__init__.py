@@ -1,3 +1,1 @@
-# This file can be empty
-
-"""Utility modules for the application."""
+"""Utility helpers (LLM, progress, api key)."""

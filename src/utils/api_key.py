@@ -1,9 +1,12 @@
+"""Helpers for pulling API keys from configuration/state."""
+
+from __future__ import annotations
+
+import os
+from typing import Any, Mapping
 
 
-def get_api_key_from_state(state: dict, api_key_name: str) -> str:
-    """Get an API key from the state object."""
-    if state and state.get("metadata", {}).get("request"):
-        request = state["metadata"]["request"]
-        if hasattr(request, 'api_keys') and request.api_keys:
-            return request.api_keys.get(api_key_name)
-    return None
+def get_api_key_from_state(state: Mapping[str, Any], env_var: str) -> str | None:
+    # Prefer explicit key in state, fall back to environment
+    data = state.get("secrets") or {}
+    return data.get(env_var) or os.environ.get(env_var)
