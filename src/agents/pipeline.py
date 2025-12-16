@@ -87,7 +87,7 @@ def task_decomposer_agent(state: AgentState, agent_id: str = "task_decomposer") 
         prompt=prompt,
         pydantic_model=TaskPlan,
         model=model,
-        default_factory=lambda: TaskPlan(steps=["Collect financial data", "Assess quality", "Estimate intrinsic value"]),
+        #default_factory=lambda: TaskPlan(steps=["Collect financial data", "Assess quality", "Estimate intrinsic value"]),
         debug=debug,
         agent_name=agent_id,
     )
